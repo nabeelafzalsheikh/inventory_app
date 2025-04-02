@@ -1,0 +1,8 @@
+models:
+  Brand:
+    brand_name: string
+    description: text nullable
+
+controllers:
+  Brand:
+    resource: web

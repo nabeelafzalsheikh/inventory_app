@@ -1,0 +1,18 @@
+created:
+    - app/Http/Controllers/BrandController.php
+    - database/factories/BrandFactory.php
+    - database/migrations/2025_03_22_061007_create_brands_table.php
+    - app/Models/Brand.php
+    - tests/Feature/Http/Controllers/BrandControllerTest.php
+    - app/Http/Requests/BrandStoreRequest.php
+    - app/Http/Requests/BrandUpdateRequest.php
+    - resources/views/brand/index.blade.php
+    - resources/views/brand/create.blade.php
+    - resources/views/brand/show.blade.php
+    - resources/views/brand/edit.blade.php
+updated:
+    - routes/web.php
+models:
+    Product: { product_name: string, category_id: 'unsignedBigInteger foreign:categories.id', sku: 'string unique', price: 'decimal:8,2', brand_id: 'unsignedBigInteger foreign:brands.id', pieces: integer, description: 'text nullable', status: 'enum:instock,outofstock,discount' }
+    Category: { name: string, status: 'enum:active,inactive', description: 'text nullable' }
+    Brand: { brand_name: string, description: 'text nullable' }

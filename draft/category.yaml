@@ -1,0 +1,9 @@
+models:
+  Category:
+    name: string
+    status: enum:active,inactive
+    description: text nullable
+
+controllers:
+  Category:
+    resource: web

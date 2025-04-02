@@ -1,0 +1,238 @@
+ /* Global Styles */
+ body {
+    font-family: 'Poppins', sans-serif;
+    background: #f8f9fa;
+    color: #333;
+}
+
+
+/* Active Link Styling */
+.nav-link.active, .pl-4.active {
+background-color: #4CAF50 !important; /* Elegant Green */
+color: white !important;
+font-weight: bold;
+border-radius: 5px;
+box-shadow: 0 3px 6px rgba(76, 175, 80, 0.3); /* Soft glow effect */
+}
+
+/* Icon color in active state */
+.nav-link.active i, .pl-4.active i {
+color: white !important;
+}
+
+/* Hover Effect */
+.nav-link:hover, .pl-4:hover {
+background-color: #388E3C !important; /* Slightly Darker Green */
+color: white !important;
+}
+
+
+.activelink{
+
+background-color: #4CAF50 !important; /* Elegant Green */
+color: white !important;
+font-weight: bold;
+border-radius: 5px;
+box-shadow: 0 3px 6px rgba(76, 175, 80, 0.3); /* Soft glow effect */   
+}
+
+/* Sidebar */
+.sidebar {
+height: 100vh; /* Full viewport height */
+width: 250px; /* Fixed width */
+position: fixed; /* Fixed position */
+top: 0; /* Align to the top */
+left: 0; /* Align to the left */
+background: #0A1F44; /* Deep Navy Blue */
+color: white; /* Text color */
+box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+transition: transform 0.3s; /* Smooth transition for animations */
+z-index: 1000; /* Ensure it stays on top */
+overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.sidebar.active {
+    transform: translateX(-250px);
+}
+
+.sidebar .company {
+    font-size: 20px;
+    font-weight: 600;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+
+.sidebar a {
+    padding: 12px 20px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #fff;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background: rgba(255, 215, 0, 0.1); /* Gold with 10% opacity */
+}
+
+.sidebar .dropdown-menu {
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.sidebar .dropdown-menu a {
+    color: #ddd;
+}
+
+.sidebar .dropdown-menu a:hover {
+    background: rgba(255, 215, 0, 0.1); /* Gold with 10% opacity */
+}
+
+/* Header */
+.header {
+    position: fixed;
+    top: 0;
+    left: 250px;
+    width: calc(100% - 250px);
+    height: 70px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: left 0.3s;
+}
+
+.header.active {
+    left: 0;
+    width: 100%;
+}
+
+.header .header-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #0A1F44; /* Deep Navy Blue */
+}
+
+.header .header-buttons button {
+    background: none;
+    border: none;
+    color: #0A1F44; /* Deep Navy Blue */
+    font-size: 18px;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.header .header-buttons button:hover {
+    color: #FFD700; /* Gold */
+}
+
+  /* Gradient Button */
+.btn-gradient {
+    background: linear-gradient(90deg, #0A1F44, #1E3A8A); /* Navy Blue Gradient */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: opacity 0.3s;
+}
+
+.btn-gradient:hover {
+    opacity: 0.9;
+}
+/* Content */
+.content {
+    margin-left: 250px;
+    margin-top: 70px;
+    padding: 30px;
+    transition: margin-left 0.3s;
+}
+
+.content.active {
+    margin-left: 0;
+}
+
+.content h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #0A1F44; /* Deep Navy Blue */
+    margin-bottom: 20px;
+}
+
+.content p {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Form Styles */
+.form-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-container label {
+    font-weight: 500;
+    color: #0A1F44; /* Deep Navy Blue */
+}
+
+
+
+.form-container .form-control:focus {
+    border-color: #0A1F44; /* Deep Navy Blue */
+    box-shadow: none;
+}
+
+.form-container .btn-gradient {
+    background: linear-gradient(90deg, #0A1F44, #1E3A8A); /* Navy Blue Gradient */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: opacity 0.3s;
+}
+
+.form-container .btn-gradient:hover {
+    opacity: 0.9;
+}
+
+.card.text-white .card-body p {
+color: white !important;
+font-weight: bold;
+}
+/* Sidebar Toggle Button */
+#sidebarToggle {
+    display: none;
+    margin-right: 15px;
+}
+
+@media (max-width: 768px) {
+    #sidebarToggle {
+        display: block;
+    }
+
+    .sidebar {
+        transform: translateX(-250px);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .header {
+        left: 0;
+        width: 100%;
+    }
+
+    .content {
+        margin-left: 0;
+    }
+}

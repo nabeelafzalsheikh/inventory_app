@@ -1,0 +1,14 @@
+models:
+  Product:
+    product_name: string
+    category_id: unsignedBigInteger foreign:categories.id
+    sku: string unique
+    price: decimal:8,2
+    brand_id: unsignedBigInteger foreign:brands.id
+    pieces: integer
+    description: text nullable
+    status: enum:instock,outofstock,discount
+
+controllers:
+  Product:
+    resource: web
