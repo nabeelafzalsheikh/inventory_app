@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StorePurchaseRequest extends FormRequest
 {
@@ -21,7 +22,14 @@ class StorePurchaseRequest extends FormRequest
             'total_price' => 'required|numeric|min:0',
             'amount_paid' => 'required|numeric|min:0',
             'remaining_balance' => 'required|numeric|min:0',
-            'lot_number' => 'required|string|max:255',
+            'lot_number' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('purchases')->where(function ($query) {
+                    return $query->where('product_id', $this->product_id);
+                }),
+            ],
             'expiry_date' => 'required|date',
             'notes' => 'nullable|string',
         ];

@@ -30,9 +30,12 @@ use App\Http\Controllers\Admin\DashboardController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
+
+Route::get('/', function() {
+   return redirect()->route('admin.dashboard');
+})->middleware('admin.auth');
+
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
@@ -78,7 +81,7 @@ Route::prefix('admin')->group(function () {
             return response()->json([
                 'count' => auth()->guard('admin')->user()->unreadMessages()->count()
             ]);
-        })->middleware('auth:admin')->name('messages.unread-count');
+        })->middleware('admin.auth')->name('messages.unread-count');
     
     });
 });
@@ -98,3 +101,7 @@ Route::middleware(['admin.auth'])->group(function () {
         Route::delete('/force-delete/{model}/{id}', [TrashController::class, 'forceDelete'])->name('trash.forceDelete');
     });
 });
+
+
+
+

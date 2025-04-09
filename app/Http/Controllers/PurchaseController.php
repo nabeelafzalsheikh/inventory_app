@@ -62,16 +62,37 @@ class PurchaseController extends Controller
     }
 
     public function update(UpdatePurchaseRequest $request, Purchase $purchase)
-    {
-        $data = $request->validated();
-        $data['total_price'] = $data['quantity'] * $data['unit_price'];
-        $data['remaining_balance'] = $data['total_price'] - $data['amount_paid'];
-        
-        $purchase->update($data);
+{
+    $data = $request->validated();
+    $data['total_price'] = $data['quantity'] * $data['unit_price'];
+    $data['remaining_balance'] = $data['total_price'] - $data['amount_paid'];
+    
+    // Get the original quantity before update to adjust stock later
+    $originalQuantity = $purchase->quantity;
+    
+    // Update the purchase details
+    $purchase->update($data);
 
-        return redirect()->route('purchases.index')
-            ->with('success', 'Purchase updated successfully.');
-    }
+    // Adjust stock based on the updated quantity (add new stock, remove old stock)
+    $this->adjustStock($purchase->product_id, $originalQuantity, $purchase->quantity, $purchase->unit_price);
+
+    return redirect()->route('purchases.index')
+        ->with('success', 'Purchase updated successfully.');
+}
+
+private function adjustStock($productId, $originalQuantity, $newQuantity, $unitPrice)
+{
+    $stock = Stock::firstOrCreate(['product_id' => $productId]);
+
+    // Calculate the difference in quantity
+    $quantityDifference = $newQuantity - $originalQuantity;
+
+    // Adjust stock based on the difference
+    $stock->quantity += $quantityDifference;
+    $stock->total_stock_value += ($quantityDifference * $unitPrice);
+
+    $stock->save();
+}
 
     public function destroy(Purchase $purchase)
     {
