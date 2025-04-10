@@ -7,12 +7,14 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <title>@yield('title')</title>
     <!-- Add your CSS files here -->
     @stack('styles')
+   
 </head>
-<body>
+<body >
     <!-- Include Header -->
     @include('admin.partials.header')
     
@@ -31,3 +33,7 @@
     {{--  @stack('scripts')  --}}
 </body>
 </html>
+<script>
+    // Wait for the DOM to be fully loaded
+
+</script>

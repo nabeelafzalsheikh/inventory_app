@@ -7,8 +7,8 @@
 <h2>Create New Product</h2>
 
 <!-- Back to Dashboard Button -->
-<a  class="btn btn-gradient mb-4">
-    <i class="fas fa-arrow-left"></i> Back to Dashboard
+<a href="{{route('products.index')}}" class="btn btn-gradient mb-4">
+    <i class="fas fa-arrow-left"></i> Back to Products
 </a>
 
 <!-- Product Form -->
@@ -38,7 +38,7 @@
                 
                 <div class="form-group">
                     <label for="productBrand"><i class="fas fa-building"></i> Brand</label>
-                    <select class="form-control" id="productBrand" name="brand_id" required>
+                    <select class="form-control select2-search" id="productBrand" name="brand_id" required>
                         <option value="">Select brand</option>
                         @foreach($brands as $brand)
                             <option value="{{ $brand->id }}" {{ old('brand_id') == $brand->id ? 'selected' : '' }}>
@@ -65,7 +65,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="productCategory"><i class="fas fa-list"></i> Category</label>
-                    <select class="form-control" id="productCategory" name="category_id" required>
+                    <select class="form-control select2-search" id="productCategory" name="category_id" required>
                         <option value="">Select category</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -98,9 +98,9 @@
                 
                 <div class="form-group">
                     <label for="productStatus"><i class="fas fa-check-circle"></i> Status</label>
-                    <select class="form-control" id="productStatus" name="status" required>
-                        <option value="instock" {{ old('status') == 'in_stock' ? 'selected' : '' }}>In Stock</option>
-                        <option value="outofstock" {{ old('status') == 'out_of_stock' ? 'selected' : '' }}>Out of Stock</option>
+                    <select class="form-control select2-search" id="productStatus" name="status" required>
+                        <option value="instock" {{ old('status') == 'instock' ? 'selected' : '' }}>In Stock</option>
+                        <option value="outofstock" {{ old('status') == 'outofstock' ? 'selected' : '' }}>Out of Stock</option>
                         <option value="discontinued" {{ old('status') == 'discontinued' ? 'selected' : '' }}>Discontinued</option>
                     </select>
                     @error('status')
@@ -117,7 +117,35 @@
     </form>
 </div>
 
+<!-- Add Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    /* Adjust Select2 height to match Bootstrap form controls */
+    .select2-container--default .select2-selection--single {
+        height: calc(2.25rem + 2px) !important;
+        padding: 0.375rem 0.75rem !important;
+        font-size: 1rem !important;
+        line-height: 1.5 !important;
+        border: 1px solid #ced4da !important;
+        border-radius: 0.25rem !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: calc(2.25rem + 2px) !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 1.5 !important;
+    }
+    
+    /* Make sure the dropdown matches the input width */
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
+
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 <script>
 $(document).ready(function() {
@@ -126,9 +154,15 @@ $(document).ready(function() {
         $('.header').toggleClass('active');
         $('.content').toggleClass('active');
     });
+    
+    // Initialize Select2 for all dropdowns with class 'select2-search'
+    $('.select2-search').select2({
+        placeholder: function() {
+            return $(this).data('placeholder') || 'Select an option';
+        },
+        width: 'resolve'
+    });
 });
 </script>
 
 @endsection
-
-

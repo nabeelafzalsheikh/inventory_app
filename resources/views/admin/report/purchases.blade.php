@@ -70,11 +70,11 @@
     <!-- Purchase Report Table -->
     <div class="card">
         <div class="card-body">
-            <div class="table-responsive">
-                <table id="purchaseReportTable" class="table table-striped table-bordered">
+            <div >
+                <table id="purchaseReportTable" class="table table-striped table-bordered nowrap" style="width:100%">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>#</th>
                             <th>Purchase Date</th>
                             <th>Supplier</th>
                             <th>Product</th>
@@ -82,6 +82,7 @@
                             <th>Total Amount</th>
                             <th>Amount Paid</th>
                             <th>Amount Payable</th>
+                            <th>Created_at</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -95,22 +96,34 @@
                             <td>${{ number_format($purchase->total_price, 2) }}</td>
                             <td>${{ number_format($purchase->amount_paid, 2) }}</td>
                             <td>${{ number_format($purchase->remaining_balance, 2) }}</td>
+                            <td>{{ $purchase->created_at}}</td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
 
-            <!-- Pagination Links -->
-            <div class="mt-3">
-                {{ $purchases->appends(request()->query())->links() }}
-            </div>
+            <!-- Include jQuery and Bootstrap JS -->
+            <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+            
+            <!-- Include SweetAlert2 -->
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            
+            <!-- Include DataTables CSS and JS -->
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.7/css/responsive.bootstrap4.min.css">
+            <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.7/js/dataTables.responsive.min.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.7/js/responsive.bootstrap4.min.js"></script>
+            
+            
         </div>
     </div>
 </div>
 
     <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
     <style>
         #purchaseReportTable {
             width: 100%;
@@ -131,21 +144,45 @@
         }
     </style>
 
-    <!-- Include jQuery, Bootstrap JS, and DataTables -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-    
+  
     <script>
         $(document).ready(function() {
             // Initialize DataTable with server-side processing disabled
             $('#purchaseReportTable').DataTable({
-                "paging": false, // Disable DataTables pagination (using Laravel pagination)
-                "searching": true,
-                "ordering": true,
-                "info": false,
-                "responsive": true
+                "responsive": true,
+        "paging": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "lengthChange": true,
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "pageLength": 5,
+        "order": [[8, "desc"]],
+        "columnDefs": [
+            {
+                "targets": 0, // Serial number column
+                "orderable": false,
+                "searchable": false
+            },
+            {
+                "targets": -1, // Operations column
+                "orderable": false,
+                "searchable": false,
+                "responsivePriority": 1
+            },
+            {
+                "targets": [1, 2], // Name and Description columns
+                "responsivePriority": 2
+            }
+        ],
+        "drawCallback": function(settings) {
+            var api = this.api();
+            var startIndex = api.page.info().page * api.page.info().length;
+            
+            api.column(0, {page: 'current'}).nodes().each(function(cell, i) {
+                cell.innerHTML = startIndex + i + 1;
+            });
+        }
             });
         });
     </script>

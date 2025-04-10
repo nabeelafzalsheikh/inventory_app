@@ -33,7 +33,7 @@ class SaleController extends Controller
         ]);
     }
 
-    $sales = $query->paginate(15);
+    $sales = $query->get();
 
     return view('admin.sales.index', compact('sales'));
 }

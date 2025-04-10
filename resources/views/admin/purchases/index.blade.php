@@ -3,10 +3,19 @@
 @section('title', 'Dashboard')
 
 @section('content')
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
 <h2>Purchase List</h2>
-<table id="PurchaseTable" class="table table-striped table-bordered" style="width:100%">
+<table id="PurchaseTable" class="table table-striped table-bordered nowrap" style="width:100%">
     <thead>
         <tr>
+            <th>#</th>
             <th>Product</th>
             <th>Supplier</th>
             <th>Quantity</th>
@@ -14,12 +23,14 @@
             <th>Total</th>
             <th>Paid</th>
             <th>Balance</th>
+            <th>Created_at</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach($purchases as $purchase)
             <tr>
+                <td>{{ $loop->iteration }}</td>
                 <td>{{ $purchase->product->name }}</td>
                 <td>{{ $purchase->supplier->name }}</td>
                 <td>{{ $purchase->quantity }}</td>
@@ -27,14 +38,14 @@
                 <td>{{ number_format($purchase->total_price, 2) }}</td>
                 <td>{{ number_format($purchase->amount_paid, 2) }}</td>
                 <td>{{ number_format($purchase->remaining_balance, 2) }}</td>
+                <td>{{ $purchase->created_at }}</td>
                 <td>
-                    <a href="{{ route('purchases.show', $purchase) }}" class="btn btn-info">View</a>
+                    {{--  <a href="{{ route('purchases.show', $purchase) }}" class="btn btn-info">View</a>  --}}
                     <a href="{{ route('purchases.edit', $purchase) }}" class="btn btn-warning">Edit</a>
-                    <form action="{{ route('purchases.destroy', $purchase) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
+                 <button onclick="confirmDelete('{{ route('purchases.destroy', $purchase->id) }}')" 
+                        class="btn btn-danger btn-sm">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
                 </td>
             </tr>
         @endforeach
@@ -46,20 +57,95 @@
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- Include DataTables CSS and JS -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.7/css/responsive.bootstrap4.min.css">
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.7/js/dataTables.responsive.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.7/js/responsive.bootstrap4.min.js"></script>
 
 <script>
+
+    function confirmDelete(url) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Create a form dynamically
+                const form = document.createElement('form');
+                form.action = url;
+                form.method = 'POST';
+                
+                // Add CSRF token
+                const csrf = document.createElement('input');
+                csrf.type = 'hidden';
+                csrf.name = '_token';
+                csrf.value = document.querySelector('meta[name="csrf-token"]').content;
+                
+                // Add method spoofing for DELETE
+                const method = document.createElement('input');
+                method.type = 'hidden';
+                method.name = '_method';
+                method.value = 'DELETE';
+                
+                // Append inputs to form
+                form.appendChild(csrf);
+                form.appendChild(method);
+                
+                // Append form to body and submit
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    } 
+
 // Initialize DataTable
 $(document).ready(function() {
     $('#PurchaseTable').DataTable({
-        "paging": true, // Enable pagination
-        "searching": true, // Enable search
-        "ordering": true, // Enable sorting
-        "info": true, // Show table information
-        "responsive": true // Make table responsive
+        "responsive": true,
+        "paging": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "lengthChange": true,
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "pageLength": 5,
+        "order": [[8, "desc"]],
+        "columnDefs": [
+            {
+                "targets": 0, // Serial number column
+                "orderable": false,
+                "searchable": false
+            },
+            {
+                "targets": -1, // Operations column
+                "orderable": false,
+                "searchable": false,
+                "responsivePriority": 1
+            },
+            {
+                "targets": [1, 2], // Name and Description columns
+                "responsivePriority": 2
+            }
+        ],
+        "drawCallback": function(settings) {
+            var api = this.api();
+            var startIndex = api.page.info().page * api.page.info().length;
+            
+            api.column(0, {page: 'current'}).nodes().each(function(cell, i) {
+                cell.innerHTML = startIndex + i + 1;
+            });
+        }
     });
 });
 
@@ -70,32 +156,9 @@ $('#sidebarToggle').click(function() {
     $('.content').toggleClass('active');
 });
 
-// Logout Functionality
-function logout() {
-    window.location.href = "login.html"; // Redirect to login page
-}
 
-// View Details Functionality
-function viewDetails(PurchaseId) {
-    alert("Viewing details for Purchase ID: " + PurchaseId);
-    // You can redirect to a details page or open a modal here
-    // Example: window.location.href = "purchase_details.php?id=" + PurchaseId;
-}
 
-// Edit Purchase Functionality
-function editPurchase(PurchaseId) {
-    alert("Editing Purchase ID: " + PurchaseId);
-    // You can redirect to an edit page or open a modal here
-    // Example: window.location.href = "edit_purchase.php?id=" + PurchaseId;
-}
 
-// Delete Purchase Functionality
-function deletePurchase(PurchaseId) {
-    if (confirm("Are you sure you want to delete Purchase ID: " + PurchaseId + "?")) {
-        alert("Deleting Purchase ID: " + PurchaseId);
-        // Add AJAX call or form submission to delete the purchase entry
-    }
-}
 </script>
 
 @endsection
